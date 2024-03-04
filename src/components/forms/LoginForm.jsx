@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext';
@@ -10,12 +11,31 @@ const LoginForm = () => {
     register,
     formState: { errors },
     handleSubmit,
+    setError,
   } = useForm();
 
-  const onSubmit = (data) => {
-    setAuth({ user: { ...data } });
-
-    navigate('/');
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_BASE_URI}/auth/login`,
+        data
+      );
+      console.log(response, 'response axios');
+      if (response.status === 200) {
+        const { user, token } = response.data;
+        if (token) {
+          const accessToken = token.accessToken;
+          const refreshToken = token.refreshToken;
+          setAuth({ user, accessToken, refreshToken });
+          navigate('/');
+        }
+      }
+    } catch (error) {
+      setError('root.serverError', {
+        type: '500',
+        message: 'Incorrect email or password',
+      });
+    }
   };
 
   return (
@@ -50,6 +70,11 @@ const LoginForm = () => {
       />
 
       <div className="mb-6">
+        {errors?.root?.serverError && (
+          <p role="alert" className="my-2 text-sm text-red-600">
+            {errors.root.serverError.message}
+          </p>
+        )}
         <button
           type="submit"
           className="w-full bg-indigo-600 text-white p-3 rounded-md hover:bg-indigo-700 transition-all duration-200">
@@ -58,9 +83,7 @@ const LoginForm = () => {
       </div>
       <p className="text-center">
         Don&apos;t have an account?{' '}
-        <Link
-          to="/register"
-          className="text-indigo-600 hover:underline">
+        <Link to="/register" className="text-indigo-600 hover:underline">
           Register
         </Link>
       </p>
