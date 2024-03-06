@@ -66,7 +66,7 @@ const HeaderActions = () => {
           </Link>
         ) : (
           <Link to={'/profile'} className="avater-img bg-orange-600 text-white">
-            <span className="">S</span>
+            <span className="capitalize">{user?.firstName[0]}</span>
           </Link>
         )}
 

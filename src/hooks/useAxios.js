@@ -23,6 +23,7 @@ export const useAxios = () => {
     const responseIntercept = instance.interceptors.response.use(
       (response) => response,
       async (error) => {
+        console.log(error, 'intercepted error');
         const originalRequest = error.config;
         // In case the request is failed again, and the server continue to return 401 status code, it may go to Infinite loop.
         // So We use a flag call _retry on original Request (config). _retry is set to true right after the first time we meet 401 status.

@@ -7,9 +7,9 @@ import { useProfileContext } from '../hooks/useProfileContext';
 import { actionTypes } from '../reducers';
 
 const ProfilePage = () => {
-  const { auth } = useAuthContext();
   const { state, dispatch } = useProfileContext();
-  console.log(state);
+
+  const { auth } = useAuthContext();
   useEffect(() => {
     dispatch({ type: actionTypes.profile.FETCH_REQUEST });
 

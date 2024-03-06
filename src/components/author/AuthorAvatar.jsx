@@ -29,7 +29,6 @@ const AuthorAvatar = () => {
         `${import.meta.env.VITE_SERVER_BASE_URI}/profile/avatar`,
         formData
       );
-      console.log(response, 'avatar data');
       if (response.status === 200) {
         dispatch({
           type: actionTypes.profile.UPDATE_AVATAR_SUCCESS,
@@ -62,7 +61,7 @@ const AuthorAvatar = () => {
         </div>
       ) : (
         <div className="w-full h-full bg-orange-600 text-white grid place-items-center text-5xl rounded-full">
-          <span className="">{state?.user?.firstName[0]}</span>
+          <span className="capitalize">{state?.user?.firstName[0]}</span>
         </div>
       )}
       <form id="form" encType="multipart/form-data">

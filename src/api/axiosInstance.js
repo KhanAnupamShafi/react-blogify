@@ -2,5 +2,5 @@ import axios from 'axios';
 
 export const instance = axios.create({
   baseURL: `${import.meta.env.VITE_SERVER_BASE_URI}`,
-  timeout: 1000,
+  //   timeout: 1000,
 });
