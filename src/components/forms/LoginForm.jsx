@@ -31,9 +31,12 @@ const LoginForm = () => {
         }
       }
     } catch (error) {
+      const errorMessage =
+        error?.response?.data?.error || 'Incorrect email or password';
+      console.log(error);
       setError('root.serverError', {
         type: '500',
-        message: 'Incorrect email or password',
+        message: errorMessage,
       });
     }
   };

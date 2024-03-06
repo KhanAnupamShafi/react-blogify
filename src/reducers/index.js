@@ -1,0 +1,11 @@
+const actionTypes = {
+  profile: {
+    FETCH_REQUEST: 'FETCH_REQUEST',
+    FETCH_SUCCESS: 'FETCH_SUCCESS',
+    UPDATE_SUCCESS: 'UPDATE_SUCCESS',
+    UPDATE_AVATAR_SUCCESS: 'UPDATE_AVATAR_SUCCESS',
+    FETCH_FAILURE: 'FETCH_FAILURE',
+  },
+};
+
+export { actionTypes };

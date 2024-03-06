@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Search from '../../assets/icons/search.svg';
 import { useAuthContext } from '../../hooks/useAuthContext';
+import { useProfileContext } from '../../hooks/useProfileContext';
 /**
 <!-- Actions - Login, Write, Home, Search -->
                 <!-- Notes for Developers -->
@@ -10,7 +11,9 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 const HeaderActions = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuthContext();
+  const { state } = useProfileContext();
 
+  const user = state?.user ?? auth?.user;
   const handleLogout = () => {
     setAuth({});
     navigate('/login');
@@ -49,14 +52,28 @@ const HeaderActions = () => {
         )}
       </li>
       <li className="flex items-center">
-        <Link to={'/profile'} className="avater-img bg-orange-600 text-white">
-          <span className="">S</span>
-        </Link>
+        {user?.avatar ? (
+          <Link
+            to={'/profile'}
+            className="avater-img bg-orange-600 text-white max-h-[32px] max-w-[32px] lg:max-h-[44px] lg:max-w-[44px]">
+            <img
+              className="rounded-full overflow-hidden w-full h-full"
+              src={`${import.meta.env.VITE_SERVER_BASE_URI}/uploads/avatar/${
+                user.avatar
+              }`}
+              alt="avatar"
+            />
+          </Link>
+        ) : (
+          <Link to={'/profile'} className="avater-img bg-orange-600 text-white">
+            <span className="">S</span>
+          </Link>
+        )}
 
         {/* <!-- Logged-in user's name --> */}
         <Link to={'/profile'}>
           <span className="text-white ml-2">
-            {auth?.user?.firstName} {auth?.user?.lastName}
+            {user?.firstName} {user?.lastName}
           </span>
         </Link>
         {/* <!-- Profile Image --> */}
