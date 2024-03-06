@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import BlogDetailPage from './pages/BlogDetailPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -16,6 +17,7 @@ function App() {
         <Route element={<PublicRoutes />}>
           <Route element={<HomePage />} path="/" exact />
           <Route element={<ProfilePage />} path="/profile" />
+          <Route element={<BlogDetailPage />} path="/blog/:blogId" />
         </Route>
 
         <Route element={<LoginPage />} path="/login" />

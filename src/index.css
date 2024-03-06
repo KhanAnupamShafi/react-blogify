@@ -7,7 +7,7 @@
 @layer base {
   body {
     font-family: 'Montserrat', sans-serif;
-    @apply bg-[#030317] text-white;
+    @apply bg-[#030317] text-white scroll-smooth;
   }
 }
 @layer components {
