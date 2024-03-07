@@ -1,11 +1,20 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAvatar } from '../../hooks/useAavatar';
 import { getFormattedDate } from '../../utils';
 
 const BlogCard = ({ blog }) => {
   const { avatarUrl } = useAvatar(blog);
+  const navigate = useNavigate();
+  const navigateToBlog = () => {
+    navigate(`/blog/${blog?.id}`);
+  };
+  const navigateToProfile = (e) => {
+    e.stopPropagation();
+    navigate(`/profile/${blog?.author?.id}`);
+  };
+
   return (
-    <Link to={`/blog/${blog?.id}`}>
+    <div onClick={navigateToBlog}>
       <div className="blog-card">
         <img
           className="blog-thumb"
@@ -21,22 +30,25 @@ const BlogCard = ({ blog }) => {
           <div className="flex justify-between items-center">
             <div className="flex items-center capitalize space-x-2">
               {avatarUrl ? (
-                <Link
-                  to={'/profile'}
+                <div
+                  onClick={navigateToProfile}
                   className="avater-img bg-orange-600 text-white max-h-[32px] max-w-[32px] lg:max-h-[44px] lg:max-w-[44px]">
                   <img
                     className="rounded-full overflow-hidden w-full h-full"
                     src={avatarUrl}
                     alt="avatar"
                   />
-                </Link>
+                </div>
               ) : (
-                <div className="avater-img bg-indigo-600 text-white">
+                <div
+                  onClick={navigateToProfile}
+                  to={'/profile'}
+                  className="avater-img bg-indigo-600 text-white">
                   <span className="">{blog?.author?.firstName[0]}</span>
                 </div>
               )}
 
-              <div>
+              <div onClick={navigateToProfile}>
                 <h5 className="text-slate-500 text-sm">
                   {blog?.author?.firstName} {blog?.author?.lastName}{' '}
                 </h5>
@@ -59,7 +71,7 @@ const BlogCard = ({ blog }) => {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

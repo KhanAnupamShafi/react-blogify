@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { instance } from '../api/axiosInstance';
 import AuthorBlogs from '../components/author/AuthorBlogs';
 import AuthorInfo from '../components/author/AuthorInfo';
@@ -8,22 +9,32 @@ import { actionTypes } from '../reducers';
 
 const ProfilePage = () => {
   const { state, dispatch } = useProfileContext();
-
   const { auth } = useAuthContext();
+  const { profileId } = useParams();
+  const userId = profileId ?? auth?.user?.id;
+
   useEffect(() => {
     dispatch({ type: actionTypes.profile.FETCH_REQUEST });
 
     const fetchProfileData = async () => {
       try {
         const response = await instance.get(
-          `${import.meta.env.VITE_SERVER_BASE_URI}/profile/${auth?.user?.id}`
+          `${import.meta.env.VITE_SERVER_BASE_URI}/profile/${userId}`
         );
 
         if (response.status === 200) {
-          dispatch({
-            type: actionTypes.profile.FETCH_SUCCESS,
-            payload: response.data,
-          });
+          if (profileId) {
+            console.log(profileId, 'profileId');
+            dispatch({
+              type: actionTypes.profile.FETCH_AUTHOR_SUCCESS,
+              payload: response.data,
+            });
+          } else {
+            dispatch({
+              type: actionTypes.profile.FETCH_SUCCESS,
+              payload: response.data,
+            });
+          }
         }
       } catch (error) {
         console.log(error?.response?.data?.error, 'errors');
@@ -36,7 +47,7 @@ const ProfilePage = () => {
       }
     };
     fetchProfileData();
-  }, [auth?.user?.id, dispatch]);
+  }, [profileId, userId, dispatch]);
 
   if (state?.loading) {
     return <div>Loading Data ...</div>;

@@ -1,17 +1,17 @@
-import { useProfileContext } from '../../hooks/useProfileContext';
+import { useProfile } from '../../hooks/useProfile';
 import AuthorAvatar from './AuthorAvatar';
 import AuthorBio from './AuthorBio';
 
 const AuthorInfo = () => {
-  const { state } = useProfileContext();
+  const { profile } = useProfile();
   return (
     <div className="flex flex-col items-center py-8 text-center">
       <AuthorAvatar />
       <div>
         <h3 className="text-2xl font-semibold text-white lg:text-[28px]">
-          {state?.user?.firstName} {state?.user?.lastName}
+          {profile?.firstName} {profile?.lastName}
         </h3>
-        <p className="leading-[231%] lg:text-lg">{state?.user?.email}</p>
+        <p className="leading-[231%] lg:text-lg">{profile?.email}</p>
       </div>
 
       <AuthorBio />

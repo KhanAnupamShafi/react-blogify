@@ -2,13 +2,17 @@ import { useState } from 'react';
 import CheckSVG from '../../assets/icons/check.svg';
 import EditSVG from '../../assets/icons/edit.svg';
 import { useAxios } from '../../hooks/useAxios';
+import { useProfile } from '../../hooks/useProfile';
 import { useProfileContext } from '../../hooks/useProfileContext';
 import { actionTypes } from '../../reducers';
 const AuthorBio = () => {
   const { state, dispatch } = useProfileContext();
+  const { profile } = useProfile();
+
   const [editMode, setEditMode] = useState(false);
   const [bio, setBio] = useState(state?.user?.bio);
   const { api } = useAxios();
+  const isMe = state?.user?.id === profile?.id;
 
   const handleBioEdit = async () => {
     dispatch({ type: actionTypes.profile.FETCH_REQUEST });
@@ -39,38 +43,55 @@ const AuthorBio = () => {
   };
   return (
     <div className="mt-4 flex items-start gap-2 lg:mt-6">
-      <div className="flex-1">
-        {!editMode ? (
+      {isMe ? (
+        <div className="flex-1">
+          {!editMode ? (
+            <p className="leading-[188%] text-gray-400 lg:text-lg">
+              {state?.user?.bio.length > 0 ? (
+                state?.user?.bio
+              ) : (
+                <span className="italic">&ldquo; Write your Bio &ldquo; </span>
+              )}
+            </p>
+          ) : (
+            <textarea
+              className='p-2 className="leading-[188%] text-gray-600 lg:text-lg rounded-md'
+              cols="60"
+              rows="4"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+            />
+          )}
+        </div>
+      ) : (
+        <div className="flex-1">
+          {' '}
           <p className="leading-[188%] text-gray-400 lg:text-lg">
-            {state?.user?.bio.length > 0 ? (
-              state?.user?.bio
+            {profile?.bio.length > 0 ? (
+              profile?.bio
             ) : (
-              <span className="italic">&ldquo; Write your Bio &ldquo; </span>
+              <span className="italic">&ldquo; No bio given &ldquo; </span>
             )}
           </p>
-        ) : (
-          <textarea
-            className='p-2 className="leading-[188%] text-gray-600 lg:text-lg rounded-md'
-            cols="60"
-            rows="4"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-          />
-        )}
-      </div>
+        </div>
+      )}
       {/* <!-- Edit Bio button. The Above bio will be editable when clicking on the button --> */}
-      {!editMode ? (
-        <button
-          onClick={() => setEditMode(true)}
-          className="flex-center h-7 w-7 rounded-full">
-          <img src={EditSVG} alt="Edit" />
-        </button>
-      ) : (
-        <button
-          onClick={handleBioEdit}
-          className="flex-center h-7 w-7 rounded-full">
-          <img src={CheckSVG} alt="Edit" />
-        </button>
+      {isMe && (
+        <div>
+          {!editMode ? (
+            <button
+              onClick={() => setEditMode(true)}
+              className="flex-center h-7 w-7 rounded-full">
+              <img src={EditSVG} alt="Edit" />
+            </button>
+          ) : (
+            <button
+              onClick={handleBioEdit}
+              className="flex-center h-7 w-7 rounded-full">
+              <img src={CheckSVG} alt="Edit" />
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

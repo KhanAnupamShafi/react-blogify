@@ -2,6 +2,7 @@ import { actionTypes } from '.';
 
 const initialState = {
   blogs: [],
+  blog: null,
   loading: false,
   error: null,
 };
@@ -24,6 +25,13 @@ const blogReducer = (state, action) => {
         ...state,
         loading: false,
         error: action.payload,
+      };
+    }
+    case actionTypes.blog.FETCH_SINGLE_SUCCESS: {
+      return {
+        ...state,
+        loading: false,
+        blog: action.payload,
       };
     }
     default:

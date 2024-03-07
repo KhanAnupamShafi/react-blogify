@@ -47,15 +47,16 @@ const AuthorAvatar = () => {
     }
   };
 
+  const profileAvatar = state?.author?.avatar ?? state?.user?.avatar;
   return (
     <div className="relative mb-8 max-h-[180px] max-w-[180px] h-[120px] w-[120px] rounded-full lg:mb-11 lg:max-h-[218px] lg:max-w-[218px] bg-orange-300">
-      {state?.user?.avatar ? (
+      {profileAvatar ? (
         <div className="h-[120px] w-[120px]">
           <img
             className="w-full h-full rounded-full"
-            src={`${import.meta.env.VITE_SERVER_BASE_URI}/uploads/avatar/${
-              state?.user?.avatar
-            }`}
+            src={`${
+              import.meta.env.VITE_SERVER_BASE_URI
+            }/uploads/avatar/${profileAvatar}`}
             alt={state?.user?.firstName}
           />
         </div>

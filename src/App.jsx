@@ -17,6 +17,7 @@ function App() {
         <Route element={<PublicRoutes />}>
           <Route element={<HomePage />} path="/" exact />
           <Route element={<ProfilePage />} path="/profile" />
+          <Route element={<ProfilePage />} path="/profile/:profileId" />
           <Route element={<BlogDetailPage />} path="/blog/:blogId" />
         </Route>
 
