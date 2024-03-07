@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 
 const CommentItem = ({ comment = {} }) => {
-  console.log(comment);
   return (
     <div className="flex items-start space-x-4 my-8">
       {comment?.author?.avatar ? (
