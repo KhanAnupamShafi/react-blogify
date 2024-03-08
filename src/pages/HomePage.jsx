@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { instance } from '../api/axiosInstance';
 import BlogCard from '../components/blogs/BlogCard';
 import EmptyBlog from '../components/blogs/EmptyBlog';
+import SkeletonLoader from '../components/loader/SkeletonLoader';
 import { useBlogContext } from '../hooks/useBlogContext';
 import { actionTypes } from '../reducers';
 
@@ -53,7 +54,7 @@ const HomePage = () => {
 
     const observerOptions = {
       root: null,
-      rootMargin: '0px',
+      rootMargin: '10px',
       threshold: 0.9,
     };
 
@@ -81,7 +82,11 @@ const HomePage = () => {
           <EmptyBlog />
         )}
 
-        {hasMore && <div ref={loaderRef}>Loading more products...</div>}
+        {hasMore && (
+          <div ref={loaderRef}>
+            <SkeletonLoader />
+          </div>
+        )}
       </div>
 
       <div className="md:col-span-2 h-full w-full space-y-5">

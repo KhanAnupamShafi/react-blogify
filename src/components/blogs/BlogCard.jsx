@@ -74,13 +74,15 @@ const BlogCard = ({ blog }) => {
   return (
     <div onClick={navigateToBlog}>
       <div className="blog-card">
-        <img
-          className="blog-thumb"
-          src={`${import.meta.env.VITE_SERVER_BASE_URI}/uploads/blog/${
-            blog?.thumbnail
-          }`}
-          alt="blog thumbnail"
-        />
+        <div className="max-w-[340px]">
+          <img
+            className="blog-thumb"
+            src={`${import.meta.env.VITE_SERVER_BASE_URI}/uploads/blog/${
+              blog?.thumbnail
+            }`}
+            alt="blog thumbnail"
+          />
+        </div>
         <div className="mt-2 relative">
           <h3 className="text-slate-300 text-xl lg:text-2xl">{blog?.title}</h3>
           <p className="mb-6 text-base text-slate-500 mt-1">{blog?.content}</p>
