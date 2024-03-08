@@ -28,8 +28,8 @@ export const useAxios = () => {
         // In case the request is failed again, and the server continue to return 401 status code, it may go to Infinite loop.
         // So We use a flag call _retry on original Request (config). _retry is set to true right after the first time we meet 401 status.
         if (
-          !originalRequest._retry &&
-          (error.response.status === 403 || error.response.status === 401)
+          !originalRequest?._retry &&
+          (error?.response?.status === 403 || error?.response?.status === 401)
         ) {
           originalRequest._retry = true;
           try {

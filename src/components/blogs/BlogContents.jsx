@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import RectBlogSVG from '../../assets/blogs/React-Roadmap.jpg';
 import { getFormattedDate } from '../../utils';
 const BlogContents = ({ blog }) => {
   const { title, thumbnail, content, tags, createdAt, likes, author } =
     blog || {};
   const navigate = useNavigate();
-
   const navigateToProfile = (e) => {
     e.stopPropagation();
     navigate(`/profile/${author?.id}`);
@@ -54,13 +54,21 @@ const BlogContents = ({ blog }) => {
             )}
           </span>
         </div>
-        <img
-          className="mx-auto w-full md:w-8/12 object-cover h-80 md:h-96"
-          src={`${
-            import.meta.env.VITE_SERVER_BASE_URI
-          }/uploads/blog/${thumbnail}`}
-          alt=""
-        />
+        {thumbnail ? (
+          <img
+            className="mx-auto w-full md:w-8/12 object-cover h-80 md:h-96"
+            src={`${
+              import.meta.env.VITE_SERVER_BASE_URI
+            }/uploads/blog/${thumbnail}`}
+            alt="thumbnail of blog"
+          />
+        ) : (
+          <img
+            className="mx-auto w-full md:w-8/12 object-cover h-80 md:h-96"
+            src={RectBlogSVG}
+            alt="thumbnail"
+          />
+        )}
 
         {/* <!-- Tags --> */}
         <ul className="tags">

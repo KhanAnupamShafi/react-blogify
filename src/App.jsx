@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import BlogDetailPage from './pages/BlogDetailPage';
+import CreateBlogPage from './pages/CreateBlogPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -12,7 +13,10 @@ function App() {
   return (
     <>
       <Routes>
-        <Route element={<PrivateRoutes />}></Route>
+        <Route element={<PrivateRoutes />}>
+          <Route element={<CreateBlogPage />} path="/create-blog" />
+          <Route element={<CreateBlogPage />} path="/edit-blog" />
+        </Route>
 
         <Route element={<PublicRoutes />}>
           <Route element={<HomePage />} path="/" exact />

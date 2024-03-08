@@ -6,4 +6,5 @@ const getFormattedDate = (dateString) => {
   );
   return formattedDate;
 };
+
 export { getFormattedDate };

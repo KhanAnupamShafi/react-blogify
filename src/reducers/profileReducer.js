@@ -75,6 +75,15 @@ const profileReducer = (state, action) => {
     case actionTypes.profile.FETCH_FAILURE: {
       return { ...state, loading: false, error: action.payload };
     }
+    case actionTypes.profile.UPDATE_AFTER_BLOG_DELETION: {
+      return {
+        ...state,
+
+        blogs: [...action.payload.blogs],
+        loading: false,
+        error: null,
+      };
+    }
 
     default:
       return state;

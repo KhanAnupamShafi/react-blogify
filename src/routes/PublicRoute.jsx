@@ -5,15 +5,17 @@ import ProfileProvider from '../context/providers/ProfileProvider';
 const PublicRoute = () => {
   return (
     <>
-      <ProfileProvider>
-        <Header />
-        <main className="">
-          <section className="container">
-            <Outlet />
-          </section>
-        </main>
-        <Footer />
-      </ProfileProvider>
+      <>
+        <ProfileProvider>
+          <Header />
+          <main className="">
+            <section className="container">
+              <Outlet />
+            </section>
+          </main>
+          <Footer />
+        </ProfileProvider>
+      </>
     </>
   );
 };

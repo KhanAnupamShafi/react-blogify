@@ -1,15 +1,16 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BlogActions from '../components/blogs/BlogActions';
 import BlogComments from '../components/blogs/BlogComments';
 import BlogContents from '../components/blogs/BlogContents';
 import { useAxios } from '../hooks/useAxios';
+import { useBlogContext } from '../hooks/useBlogContext';
 import { actionTypes } from '../reducers';
-import { blogReducer, initialState } from '../reducers/blogReducer';
 const BlogDetailPage = () => {
+  const { state, dispatch } = useBlogContext();
+
   const { blogId } = useParams();
   const { api } = useAxios();
-  const [state, dispatch] = useReducer(blogReducer, initialState);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -34,10 +35,18 @@ const BlogDetailPage = () => {
           type: actionTypes.profile.FETCH_FAILURE,
           payload: error?.response?.data?.error || 'This Blog is not available',
         });
+        console.log(error, 'blog detail page');
       }
     };
     fetchSingleBlog();
   }, [blogId, dispatch, api]);
+
+  if (state?.loading) {
+    return <div>Loading ...</div>;
+  }
+  if (state?.error) {
+    return <div>Error fetching in Blog Detail...</div>;
+  }
 
   return (
     <>

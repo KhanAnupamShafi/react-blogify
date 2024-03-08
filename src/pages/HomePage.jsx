@@ -1,28 +1,39 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { instance } from '../api/axiosInstance';
 import BlogCard from '../components/blogs/BlogCard';
 import EmptyBlog from '../components/blogs/EmptyBlog';
+import { useBlogContext } from '../hooks/useBlogContext';
 import { actionTypes } from '../reducers';
-import { blogReducer, initialState } from '../reducers/blogReducer';
 
 const HomePage = () => {
-  const [state, dispatch] = useReducer(blogReducer, initialState);
+  const { state, dispatch } = useBlogContext();
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
   const blogs = state?.blogs;
+
+  const loaderRef = useRef();
   useEffect(() => {
     dispatch({ type: actionTypes.blog.FETCH_REQUEST });
 
     const fetchBlogs = async () => {
       try {
         const response = await instance.get(
-          `${import.meta.env.VITE_SERVER_BASE_URI}/blogs?page=1`
+          `${import.meta.env.VITE_SERVER_BASE_URI}/blogs?page=${page}&limit=5`
         );
         if (response.status === 200) {
-          dispatch({
-            type: actionTypes.blog.FETCH_SUCCESS,
-            payload: response.data,
-          });
+          const fetchedBlogs = response.data.blogs;
+          if (fetchedBlogs.length === 0) {
+            setHasMore(false);
+          } else {
+            dispatch({
+              type: actionTypes.blog.FETCH_SUCCESS,
+              payload: [...blogs, ...fetchedBlogs],
+            });
+            setPage((prevPage) => prevPage + 1);
+          }
         }
       } catch (error) {
+        console.log(error, 'home page error');
         dispatch({
           type: actionTypes.blog.FETCH_FAILURE,
           payload:
@@ -31,86 +42,46 @@ const HomePage = () => {
         });
       }
     };
-    fetchBlogs();
-  }, []);
 
-  if (state?.loading) {
-    return <div>Loading ...</div>;
-  }
-  if (state?.error) {
-    return <div>Error fetching...</div>;
-  }
+    const onIntersection = (items) => {
+      const loaderItem = items[0];
+      console.log('loaderItem.isIntersecting:', loaderItem.isIntersecting);
+      if (loaderItem.isIntersecting && hasMore) {
+        fetchBlogs();
+      }
+    };
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.9,
+    };
+
+    const observer = new IntersectionObserver(onIntersection, observerOptions);
+
+    if (observer && loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => {
+      if (observer) {
+        observer.disconnect();
+      }
+    };
+  }, [hasMore, page, dispatch, blogs]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
       <div className="space-y-3 md:col-span-5">
         {/* <!-- Blog Card Start --> */}
-        {/* <div className="blog-card">
-          <img
-            className="blog-thumb"
-            src="./assets/blogs/React-Roadmap.jpg"
-            alt=""
-          />
-          <div className="mt-2 relative">
-            <a href="./single-blog.html">
-              <h3 className="text-slate-300 text-xl lg:text-2xl">
-                <a href="./single-blog.html">React Roadmap in 2024</a>
-              </h3>
-            </a>
-            <p className="mb-6 text-base text-slate-500 mt-1">
-              Aenean eleifend ante maecenas pulvinar montes lorem et
-              pede dis dolor pretium donec dictum. Vici consequat
-              justo enim. Venenatis eget adipiscing luctus lorem.
-            </p>
-
-            <div className="flex justify-between items-center">
-              <div className="flex items-center capitalize space-x-2">
-                <div className="avater-img bg-indigo-600 text-white">
-                  <span className="">S</span>
-                </div>
-
-                <div>
-                  <h5 className="text-slate-500 text-sm">
-                    <a href="./profile.html">Saad Hasan</a>
-                  </h5>
-                  <div className="flex items-center text-xs text-slate-700">
-                    <span>June 28, 2018</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-sm px-2 py-1 text-slate-700">
-                <span>100 Likes</span>
-              </div>
-            </div>
-
-            <div className="absolute right-0 top-0">
-              <button>
-                <img
-                  src="./assets/icons/3dots.svg"
-                  alt="3dots of Action"
-                />
-              </button>
-
-              <div className="action-modal-container">
-                <button className="action-menu-item hover:text-lwsGreen">
-                  <img src="./assets/icons/edit.svg" alt="Edit" />
-                  Edit
-                </button>
-                <button className="action-menu-item hover:text-red-500">
-                  <img src="./assets/icons/delete.svg" alt="Delete" />
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div> */}
 
         {blogs.length > 0 ? (
           blogs?.map((blog) => <BlogCard key={blog.id} blog={blog} />)
         ) : (
           <EmptyBlog />
         )}
+
+        {hasMore && <div ref={loaderRef}>Loading more products...</div>}
       </div>
 
       <div className="md:col-span-2 h-full w-full space-y-5">
