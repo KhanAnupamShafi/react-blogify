@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Search from '../../assets/icons/search.svg';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { useProfileContext } from '../../hooks/useProfileContext';
+import useReactPortal from '../../hooks/useReactPortal';
+import SearchModal from '../modal/SearchModal';
 /**
 <!-- Actions - Login, Write, Home, Search -->
                 <!-- Notes for Developers -->
@@ -9,6 +12,7 @@ import { useProfileContext } from '../../hooks/useProfileContext';
                 <!-- For Not Logged in User - Login Menu -->
  */
 const HeaderActions = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { auth, setAuth } = useAuthContext();
   const { state } = useProfileContext();
@@ -19,8 +23,17 @@ const HeaderActions = () => {
     navigate('/login');
   };
 
+  const handleToggleModal = () => {
+    setIsOpen(false);
+  };
+
+  const portal = useReactPortal(
+    <SearchModal isOpen={isOpen} onClose={handleToggleModal} />,
+    'modal-root'
+  );
   return (
     <ul className="flex items-center space-x-5">
+      {portal}
       <li>
         <Link
           to="/create-blog"
@@ -29,12 +42,12 @@ const HeaderActions = () => {
         </Link>
       </li>
       <li>
-        <a
-          href="./search.html"
+        <button
+          onClick={() => setIsOpen(true)}
           className="flex items-center gap-2 cursor-pointer">
           <img src={Search} alt="Search" />
           <span>Search</span>
-        </a>
+        </button>
       </li>
       <li>
         {!auth?.user ? (

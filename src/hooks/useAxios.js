@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { instance } from '../api/axiosInstance';
 import { useAuthContext } from './useAuthContext';
-
 export const useAxios = () => {
   const { auth, setAuth } = useAuthContext();
   const refreshTokenRef = useRef(auth?.refreshToken);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const requestIntercept = instance.interceptors.request.use(
       (config) => {
@@ -38,6 +38,8 @@ export const useAxios = () => {
               `${import.meta.env.VITE_SERVER_BASE_URI}/auth/refresh-token`,
               { refreshToken }
             );
+            console.log('ad yo yo yoy o', response);
+
             const { accessToken } = response.data;
             originalRequest.headers.Authorization = 'Bearer ' + accessToken;
             console.log(
@@ -46,7 +48,15 @@ export const useAxios = () => {
             setAuth((prevAuth) => ({ ...prevAuth, accessToken }));
             return axios(originalRequest);
           } catch (error) {
-            console.error(error);
+            if (
+              error?.response?.data?.error === 'jwt expired' ||
+              error?.response?.data?.error === 'invalid algorithm' ||
+              error?.response?.data?.error === 'invalid signature'
+            ) {
+              localStorage.clear();
+              navigate('/login');
+            }
+            console.error(error?.response, 'xsafs');
           }
         }
         return Promise.reject(error);
@@ -56,7 +66,7 @@ export const useAxios = () => {
       instance.interceptors.request.eject(requestIntercept);
       instance.interceptors.response.eject(responseIntercept);
     };
-  }, [auth?.accessToken, setAuth]);
+  }, [auth?.accessToken, setAuth, navigate]);
 
   return { api: instance };
 };

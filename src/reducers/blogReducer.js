@@ -68,6 +68,7 @@ const blogReducer = (state, action) => {
     case actionTypes.blog.RESET_BLOG: {
       return {
         ...state,
+        loading: false,
         blog: {},
       };
     }

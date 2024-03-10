@@ -11,7 +11,7 @@ const CreateBlogPage = () => {
   const location = useLocation();
   const { state, dispatch } = useBlogContext();
   const { api } = useAxios();
-
+  console.log(state, 'createBlogPage');
   const fileUploadRef = useRef();
   const [selectedImage, setSelectedImage] = useState(null);
   //   const user = profile?.user ?? auth?.user;

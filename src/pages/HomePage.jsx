@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { instance } from '../api/axiosInstance';
 import BlogCard from '../components/blogs/BlogCard';
 import EmptyBlog from '../components/blogs/EmptyBlog';
+import FavoriteBlogs from '../components/blogs/FavoriteBlogs';
 import SkeletonLoader from '../components/loader/SkeletonLoader';
 import { useBlogContext } from '../hooks/useBlogContext';
 import { actionTypes } from '../reducers';
@@ -11,12 +12,11 @@ const HomePage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const blogs = state?.blogs;
-
   const loaderRef = useRef();
   useEffect(() => {
-    dispatch({ type: actionTypes.blog.FETCH_REQUEST });
-
     const fetchBlogs = async () => {
+      dispatch({ type: actionTypes.blog.FETCH_REQUEST });
+
       try {
         const response = await instance.get(
           `${import.meta.env.VITE_SERVER_BASE_URI}/blogs?page=${page}&limit=5`
@@ -75,7 +75,6 @@ const HomePage = () => {
     <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
       <div className="space-y-3 md:col-span-5">
         {/* <!-- Blog Card Start --> */}
-
         {blogs.length > 0 ? (
           blogs?.map((blog) => <BlogCard key={blog.id} blog={blog} />)
         ) : (
@@ -142,49 +141,7 @@ const HomePage = () => {
           </ul>
         </div>
 
-        <div className="sidebar-card">
-          <h3 className="text-slate-300 text-xl lg:text-2xl font-semibold">
-            Your Favourites ❤️
-          </h3>
-
-          <ul className="space-y-5 my-5">
-            <li>
-              <h3 className="text-slate-400 font-medium hover:text-slate-300 transition-all cursor-pointer">
-                How to Auto Deploy a Next.js App on Ubuntu from GitHub
-              </h3>
-              <p className="text-slate-600 text-sm">
-                #tailwindcss, #server, #ubuntu
-              </p>
-            </li>
-
-            <li>
-              <h3 className="text-slate-400 font-medium hover:text-slate-300 transition-all cursor-pointer">
-                How to Auto Deploy a Next.js App on Ubuntu from GitHub
-              </h3>
-              <p className="text-slate-600 text-sm">
-                #tailwindcss, #server, #ubuntu
-              </p>
-            </li>
-
-            <li>
-              <h3 className="text-slate-400 font-medium hover:text-slate-300 transition-all cursor-pointer">
-                How to Auto Deploy a Next.js App on Ubuntu from GitHub
-              </h3>
-              <p className="text-slate-600 text-sm">
-                #tailwindcss, #server, #ubuntu
-              </p>
-            </li>
-
-            <li>
-              <h3 className="text-slate-400 font-medium hover:text-slate-300 transition-all cursor-pointer">
-                How to Auto Deploy a Next.js App on Ubuntu from GitHub
-              </h3>
-              <p className="text-slate-600 text-sm">
-                #tailwindcss, #server, #ubuntu
-              </p>
-            </li>
-          </ul>
-        </div>
+        <FavoriteBlogs />
       </div>
     </div>
   );
