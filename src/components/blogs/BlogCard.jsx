@@ -13,6 +13,7 @@ import { getFormattedDate } from '../../utils';
 
 const BlogCard = ({ blog }) => {
   const [showActionDot, setShowActionDot] = useState(false);
+
   const { avatarUrl } = useAvatar(blog);
   const navigate = useNavigate();
   const { hasPermission } = useCheckAuthor(blog);

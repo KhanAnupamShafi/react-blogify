@@ -1,17 +1,27 @@
 import { Link } from 'react-router-dom';
+import { useAuthContext } from '../../hooks/useAuthContext';
 
-const CommentItem = ({ comment = {} }) => {
+const CommentItem = ({ comment = {}, profileAvatar }) => {
+  const { auth } = useAuthContext();
+  let avatar;
+  const isMyComment = comment.author.id === auth?.user?.id;
+  if (isMyComment) {
+    avatar = profileAvatar;
+  } else {
+    avatar = comment?.author?.avatar;
+  }
+  console.log(avatar);
   return (
     <div className="flex items-start space-x-4 my-8">
-      {comment?.author?.avatar ? (
+      {avatar ? (
         <Link
           to={`/profile/${comment?.author?.id}`}
           className="avater-img bg-orange-600 text-white max-h-[32px] max-w-[32px] lg:max-h-[44px] lg:max-w-[44px]">
           <img
             className="rounded-full overflow-hidden w-full h-full"
-            src={`${import.meta.env.VITE_SERVER_BASE_URI}/uploads/avatar/${
-              comment.author.avatar
-            }`}
+            src={`${
+              import.meta.env.VITE_SERVER_BASE_URI
+            }/uploads/avatar/${avatar}`}
             alt="avatar"
           />
         </Link>

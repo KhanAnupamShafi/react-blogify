@@ -1,7 +1,7 @@
-const BlogLoader = () => {
+const Loader = () => {
   return (
     <div>
-      <div className="py-2 mt-3 rounded-md bg-gray-900 text-white flex items-center justify-center gap-3">
+      <div className="py-2 mt-3 rounded-md bg-gray-900 text-white flex items-center justify-center gap-3 px-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="50"
@@ -15,10 +15,10 @@ const BlogLoader = () => {
             d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
           />
         </svg>
-        <span className=""> Loading Blogs ...</span>
+        <span className=""> Loading Please wait ...</span>
       </div>
     </div>
   );
 };
 
-export default BlogLoader;
+export default Loader;

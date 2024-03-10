@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { useAxios } from '../../hooks/useAxios';
+import { useProfileContext } from '../../hooks/useProfileContext';
 import CommentItem from './CommentItem';
 
 const BlogComments = ({ blogId = '', comments = [], setComments }) => {
   const { auth } = useAuthContext();
+  const { state } = useProfileContext();
   const { api } = useAxios();
   const user = auth?.user;
 
@@ -26,7 +28,8 @@ const BlogComments = ({ blogId = '', comments = [], setComments }) => {
       }
     }
   };
-
+  const profileAvatar =
+    state?.author?.avatar ?? state?.user?.avatar ?? user?.avatar;
   return (
     <section id="comments">
       <div className="mx-auto w-full md:w-10/12 container">
@@ -40,9 +43,9 @@ const BlogComments = ({ blogId = '', comments = [], setComments }) => {
               className="avater-img bg-orange-600 text-white max-h-[32px] max-w-[32px] lg:max-h-[44px] lg:max-w-[44px]">
               <img
                 className="rounded-full overflow-hidden w-full h-full"
-                src={`${import.meta.env.VITE_SERVER_BASE_URI}/uploads/avatar/${
-                  user.avatar
-                }`}
+                src={`${
+                  import.meta.env.VITE_SERVER_BASE_URI
+                }/uploads/avatar/${profileAvatar}`}
                 alt="avatar"
               />
             </Link>
@@ -75,7 +78,11 @@ const BlogComments = ({ blogId = '', comments = [], setComments }) => {
           ?.slice()
           .reverse()
           .map((comment) => (
-            <CommentItem key={comment.id} comment={comment} />
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              profileAvatar={profileAvatar}
+            />
           ))}
       </div>
     </section>

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { instance } from '../api/axiosInstance';
 import AuthorBlogs from '../components/author/AuthorBlogs';
 import AuthorInfo from '../components/author/AuthorInfo';
+import PreLoader from '../components/loader/PreLoader';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useProfileContext } from '../hooks/useProfileContext';
 import { actionTypes } from '../reducers';
@@ -24,7 +25,6 @@ const ProfilePage = () => {
 
         if (response.status === 200) {
           if (profileId) {
-            console.log(profileId, 'profileId');
             dispatch({
               type: actionTypes.profile.FETCH_AUTHOR_SUCCESS,
               payload: response.data,
@@ -50,7 +50,7 @@ const ProfilePage = () => {
   }, [profileId, userId, dispatch]);
 
   if (state?.loading) {
-    return <div>Loading Data ...</div>;
+    return <PreLoader when={true} />;
   }
   if (state?.error) {
     return <div>{state.error}</div>;

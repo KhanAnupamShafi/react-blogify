@@ -1,23 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
+import PreLoader from '../components/loader/PreLoader';
 import InputField from '../components/shared/InputField';
 import TextAreaField from '../components/shared/TextAreaField';
 import { useAxios } from '../hooks/useAxios';
 import { useBlogContext } from '../hooks/useBlogContext';
 import { actionTypes } from '../reducers';
+
 const CreateBlogPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state, dispatch } = useBlogContext();
   const { api } = useAxios();
-  console.log(state, 'createBlogPage');
   const fileUploadRef = useRef();
   const [selectedImage, setSelectedImage] = useState(null);
-  //   const user = profile?.user ?? auth?.user;
-  // Determine if we are in edit mode
-  const isEditMode = location.pathname === '/edit-blog';
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isEditMode = location.pathname === '/edit-blog' && state?.blog?.id;
+  console.log(isEditMode);
   const {
     register,
     handleSubmit,
@@ -37,8 +37,9 @@ const CreateBlogPage = () => {
   useEffect(() => {
     if (!isEditMode) {
       reset({ title: '', tags: '', content: '' });
+      navigate('/create-blog');
     }
-  }, [isEditMode, reset]);
+  }, [isEditMode, reset, navigate]);
 
   const handleImageUpload = (e) => {
     e.preventDefault();
@@ -63,6 +64,7 @@ const CreateBlogPage = () => {
 
   // post blog entry
   const onSubmit = async (formData) => {
+    setIsSubmitting(true);
     dispatch({ type: actionTypes.blog.FETCH_REQUEST });
 
     const formDataToSend = new FormData();
@@ -98,6 +100,7 @@ const CreateBlogPage = () => {
         reset();
 
         setTimeout(() => {
+          setIsSubmitting(false);
           navigate(`/blog/${response?.data?.blog?.id}`);
         }, 700);
       }
@@ -108,12 +111,11 @@ const CreateBlogPage = () => {
         });
 
         setTimeout(() => {
+          setIsSubmitting(false);
           navigate(`/blog/${response?.data?.id}`);
         }, 700);
       }
     } catch (error) {
-      console.log(error, 'create blog page');
-
       const errorMessage =
         error?.response?.data?.error ||
         'Blog post was unsuccessful - ' +
@@ -124,11 +126,12 @@ const CreateBlogPage = () => {
         type: actionTypes.blog.FETCH_FAILURE,
         payload: errorMessage,
       });
+      setIsSubmitting(false);
     }
   };
 
   if (state?.loading) {
-    return <div>Loading ...</div>;
+    return <PreLoader when={true} />;
   }
   return (
     <div className="min-h-[calc(100vh-220px)]">
@@ -263,6 +266,7 @@ const CreateBlogPage = () => {
           className="bg-indigo-600 text-white px-6 py-2 md:py-3 rounded-md hover:bg-indigo-700 transition-all duration-200">
           {!isEditMode ? 'Create' : 'Edit'} Blog
         </button>
+        {isSubmitting && <PreLoader when={true} />}
       </form>
     </div>
   );

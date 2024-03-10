@@ -17,7 +17,6 @@ const HeaderActions = () => {
   const { auth, setAuth } = useAuthContext();
   const { state } = useProfileContext();
   const user = state?.user ?? auth?.user;
-
   const handleLogout = () => {
     setAuth({});
     navigate('/login');
@@ -41,14 +40,16 @@ const HeaderActions = () => {
           Write
         </Link>
       </li>
-      <li>
-        <button
-          onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 cursor-pointer">
-          <img src={Search} alt="Search" />
-          <span>Search</span>
-        </button>
-      </li>
+      {user && (
+        <li>
+          <button
+            onClick={() => setIsOpen(true)}
+            className="flex items-center gap-2 cursor-pointer">
+            <img src={Search} alt="Search" />
+            <span>Search</span>
+          </button>
+        </li>
+      )}
       <li>
         {!auth?.user ? (
           <Link
@@ -64,33 +65,37 @@ const HeaderActions = () => {
           </button>
         )}
       </li>
-      <li className="flex items-center">
-        {user?.avatar ? (
-          <Link
-            to={'/profile'}
-            className="avater-img bg-orange-600 text-white max-h-[32px] max-w-[32px] lg:max-h-[44px] lg:max-w-[44px]">
-            <img
-              className="rounded-full overflow-hidden w-full h-full"
-              src={`${import.meta.env.VITE_SERVER_BASE_URI}/uploads/avatar/${
-                user.avatar
-              }`}
-              alt="avatar"
-            />
-          </Link>
-        ) : (
-          <Link to={'/profile'} className="avater-img bg-orange-600 text-white">
-            <span className="capitalize">{user?.firstName[0]}</span>
-          </Link>
-        )}
+      {user && (
+        <li className="flex items-center">
+          {user?.avatar ? (
+            <Link
+              to={'/profile'}
+              className="avater-img bg-orange-600 text-white max-h-[32px] max-w-[32px] lg:max-h-[44px] lg:max-w-[44px]">
+              <img
+                className="rounded-full overflow-hidden w-full h-full"
+                src={`${import.meta.env.VITE_SERVER_BASE_URI}/uploads/avatar/${
+                  user.avatar
+                }`}
+                alt="avatar"
+              />
+            </Link>
+          ) : (
+            <Link
+              to={'/profile'}
+              className="avater-img bg-orange-600 text-white">
+              <span className="capitalize">{user?.firstName[0]}</span>
+            </Link>
+          )}
 
-        {/* <!-- Logged-in user's name --> */}
-        <Link to={'/profile'}>
-          <span className="text-white ml-2">
-            {user?.firstName} {user?.lastName}
-          </span>
-        </Link>
-        {/* <!-- Profile Image --> */}
-      </li>
+          {/* <!-- Logged-in user's name --> */}
+          <Link to={'/profile'}>
+            <span className="text-white ml-2">
+              {user?.firstName} {user?.lastName}
+            </span>
+          </Link>
+          {/* <!-- Profile Image --> */}
+        </li>
+      )}
     </ul>
   );
 };

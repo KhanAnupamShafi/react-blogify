@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import CheckSVG from '../../assets/icons/check.svg';
 import EditSVG from '../../assets/icons/edit.svg';
+import { useAuthContext } from '../../hooks/useAuthContext';
 import { useAxios } from '../../hooks/useAxios';
 import { useProfile } from '../../hooks/useProfile';
 import { useProfileContext } from '../../hooks/useProfileContext';
@@ -8,11 +10,12 @@ import { actionTypes } from '../../reducers';
 const AuthorBio = () => {
   const { state, dispatch } = useProfileContext();
   const { profile } = useProfile();
-
+  const { auth } = useAuthContext();
+  const location = useLocation();
   const [editMode, setEditMode] = useState(false);
   const [bio, setBio] = useState(state?.user?.bio);
   const { api } = useAxios();
-  const isMe = state?.user?.id === profile?.id;
+  const isMe = auth?.user?.id === state?.author?.id;
 
   const handleBioEdit = async () => {
     dispatch({ type: actionTypes.profile.FETCH_REQUEST });
@@ -47,8 +50,8 @@ const AuthorBio = () => {
         <div className="flex-1">
           {!editMode ? (
             <p className="leading-[188%] text-gray-400 lg:text-lg">
-              {state?.user?.bio.length > 0 ? (
-                state?.user?.bio
+              {profile?.bio.length > 0 ? (
+                profile?.bio
               ) : (
                 <span className="italic">&ldquo; Write your Bio &ldquo; </span>
               )}
@@ -76,7 +79,7 @@ const AuthorBio = () => {
         </div>
       )}
       {/* <!-- Edit Bio button. The Above bio will be editable when clicking on the button --> */}
-      {isMe && (
+      {(isMe || location.pathname === '/profile') && (
         <div>
           {!editMode ? (
             <button

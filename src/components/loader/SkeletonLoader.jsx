@@ -1,4 +1,4 @@
-import BlogLoader from './BlogLoader';
+import Loader from './Loader';
 
 const SkeletonLoader = () => {
   return (
@@ -19,7 +19,7 @@ const SkeletonLoader = () => {
           </div>
         </div>
       </div>
-      <BlogLoader />
+      <Loader />
     </div>
   );
 };

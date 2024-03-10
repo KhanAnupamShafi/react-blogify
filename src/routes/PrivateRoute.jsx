@@ -6,6 +6,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 
 const PrivateRoute = () => {
   const { auth } = useAuthContext();
+
   return (
     <>
       {auth?.accessToken ? (

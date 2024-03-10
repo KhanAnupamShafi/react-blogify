@@ -10,7 +10,7 @@ const BlogActions = ({
   isFavourite,
 }) => {
   return (
-    <div className="floating-action">
+    <div className="floating-action z-10">
       <ul className="floating-action-menus">
         <li>
           <BlogLike blogId={blogId} initialLikes={initialLikes} />

@@ -3,23 +3,27 @@ import { instance } from '../api/axiosInstance';
 import BlogCard from '../components/blogs/BlogCard';
 import EmptyBlog from '../components/blogs/EmptyBlog';
 import FavoriteBlogs from '../components/blogs/FavoriteBlogs';
+import PopularBlogs from '../components/blogs/PopularBlogs';
 import SkeletonLoader from '../components/loader/SkeletonLoader';
+import { useAuthContext } from '../hooks/useAuthContext';
 import { useBlogContext } from '../hooks/useBlogContext';
 import { actionTypes } from '../reducers';
 
 const HomePage = () => {
   const { state, dispatch } = useBlogContext();
+  const { auth } = useAuthContext();
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const blogs = state?.blogs;
   const loaderRef = useRef();
+
   useEffect(() => {
     const fetchBlogs = async () => {
       dispatch({ type: actionTypes.blog.FETCH_REQUEST });
 
       try {
         const response = await instance.get(
-          `${import.meta.env.VITE_SERVER_BASE_URI}/blogs?page=${page}&limit=5`
+          `${import.meta.env.VITE_SERVER_BASE_URI}/blogs?page=${page}&limit=10`
         );
         if (response.status === 200) {
           const fetchedBlogs = response.data.blogs;
@@ -89,59 +93,9 @@ const HomePage = () => {
       </div>
 
       <div className="md:col-span-2 h-full w-full space-y-5">
-        <div className="sidebar-card">
-          <h3 className="text-slate-300 text-xl lg:text-2xl font-semibold">
-            Most Popular 👍️
-          </h3>
+        <PopularBlogs />
 
-          <ul className="space-y-5 my-5">
-            <li>
-              <h3 className="text-slate-400 font-medium hover:text-slate-300 transition-all cursor-pointer">
-                How to Auto Deploy a Next.js App on Ubuntu from GitHub
-              </h3>
-              <p className="text-slate-600 text-sm">
-                by
-                <a href="./profile.html">Saad Hasan</a>
-                <span>·</span> 100 Likes
-              </p>
-            </li>
-
-            <li>
-              <h3 className="text-slate-400 font-medium hover:text-slate-300 transition-all cursor-pointer">
-                How to Auto Deploy a Next.js App on Ubuntu from GitHub
-              </h3>
-              <p className="text-slate-600 text-sm">
-                by
-                <a href="./profile.html">Saad Hasan</a>
-                <span>·</span> 100 Likes
-              </p>
-            </li>
-
-            <li>
-              <h3 className="text-slate-400 font-medium hover:text-slate-300 transition-all cursor-pointer">
-                How to Auto Deploy a Next.js App on Ubuntu from GitHub
-              </h3>
-              <p className="text-slate-600 text-sm">
-                by
-                <a href="./profile.html">Saad Hasan</a>
-                <span>·</span> 100 Likes
-              </p>
-            </li>
-
-            <li>
-              <h3 className="text-slate-400 font-medium hover:text-slate-300 transition-all cursor-pointer">
-                How to Auto Deploy a Next.js App on Ubuntu from GitHub
-              </h3>
-              <p className="text-slate-600 text-sm">
-                by
-                <a href="./profile.html">Saad Hasan</a>
-                <span>·</span> 100 Likes
-              </p>
-            </li>
-          </ul>
-        </div>
-
-        <FavoriteBlogs />
+        {auth.accessToken && <FavoriteBlogs />}
       </div>
     </div>
   );

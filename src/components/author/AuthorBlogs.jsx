@@ -5,7 +5,6 @@ import EmptyBlog from '../blogs/EmptyBlog';
 const AuthorBlogs = () => {
   const { state } = useProfileContext();
   const blogs = state?.blogs;
-  console.log(blogs);
   return (
     <div className="my-6 space-y-4">
       {blogs.length > 0 ? (
