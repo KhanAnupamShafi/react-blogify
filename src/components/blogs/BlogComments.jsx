@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { useAxios } from '../../hooks/useAxios';
 import { useProfileContext } from '../../hooks/useProfileContext';
@@ -10,9 +10,13 @@ const BlogComments = ({ blogId = '', comments = [], setComments }) => {
   const { state } = useProfileContext();
   const { api } = useAxios();
   const user = auth?.user;
-
+  const navigate = useNavigate();
   const [comment, setComment] = useState('');
   const addComment = async () => {
+    if (!user?.id) {
+      navigate('/login');
+      return;
+    }
     if (comment.length > 0) {
       try {
         const response = await api.post(
@@ -52,7 +56,9 @@ const BlogComments = ({ blogId = '', comments = [], setComments }) => {
           ) : (
             <Link
               to={'/profile'}
-              className="avater-img bg-indigo-600 text-white">
+              className={`avater-img bg-indigo-600 text-white ${
+                !user?.id && 'invisible'
+              }`}>
               <span className="capitalize">{user?.firstName[0]}</span>
             </Link>
           )}
@@ -66,6 +72,7 @@ const BlogComments = ({ blogId = '', comments = [], setComments }) => {
             />
             <div className="flex justify-end mt-4">
               <button
+                title={!user?.id && 'please login to comment'}
                 onClick={addComment}
                 className="bg-indigo-600 text-white px-6 py-2 md:py-3 rounded-md hover:bg-indigo-700 transition-all duration-200">
                 Comment

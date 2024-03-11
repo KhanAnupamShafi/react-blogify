@@ -20,4 +20,15 @@ const ScrollToTop = () => {
   }, [pathname]);
 };
 
-export { ScrollToTop, getFormattedDate };
+let MAX_WORDS = 35;
+const getPreviewContent = (content) => {
+  const words = content.split(/\s+/);
+  if (words.length <= MAX_WORDS) {
+    return content;
+  } else {
+    const previewWords = words.slice(0, MAX_WORDS);
+    return previewWords.join(' ') + '...';
+  }
+};
+
+export { ScrollToTop, getFormattedDate, getPreviewContent };

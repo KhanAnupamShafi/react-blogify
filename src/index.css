@@ -119,3 +119,14 @@
     @apply px-4 py-2 hover:bg-slate-800 flex w-full items-center gap-2 text-gray-100 transition-all;
   }
 }
+
+.modal {
+  width: clamp(30%, 500px, 90%);
+  height: min(50%, 200px);
+  margin: auto;
+  padding: 0 2rem;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

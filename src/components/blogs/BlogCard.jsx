@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DotSVG from '../../assets/icons/3dots.svg';
@@ -8,12 +9,15 @@ import { useAxios } from '../../hooks/useAxios';
 import { useBlogContext } from '../../hooks/useBlogContext';
 import { useCheckAuthor } from '../../hooks/useCheckAuthor';
 import { useProfileContext } from '../../hooks/useProfileContext';
+import useReactPortal from '../../hooks/useReactPortal';
 import { actionTypes } from '../../reducers';
-import { getFormattedDate } from '../../utils';
+import { getFormattedDate, getPreviewContent } from '../../utils';
+import Modal from '../modal/Modal';
+import Alert from '../shared/Alert';
 
 const BlogCard = ({ blog }) => {
   const [showActionDot, setShowActionDot] = useState(false);
-
+  const [modalOpen, setModalOpen] = useState(false);
   const { avatarUrl } = useAvatar(blog);
   const navigate = useNavigate();
   const { hasPermission } = useCheckAuthor(blog);
@@ -22,9 +26,11 @@ const BlogCard = ({ blog }) => {
     useProfileContext();
   const { api } = useAxios();
 
-  const navigateToBlog = () => {
-    navigate(`/blog/${blog?.id}`);
+  const navigateToBlog = (e) => {
+    e.stopPropagation();
+    navigate(`blog/${blog?.id}`);
   };
+
   const navigateToProfile = (e) => {
     e.stopPropagation();
     navigate(`/profile/${blog?.author?.id}`);
@@ -32,6 +38,7 @@ const BlogCard = ({ blog }) => {
 
   // Delete blog
   const handleDeleteTask = async () => {
+    console.log('asdg');
     dispatch({ type: actionTypes.blog.FETCH_REQUEST });
 
     try {
@@ -64,16 +71,22 @@ const BlogCard = ({ blog }) => {
   };
 
   // Edit blog
-  const handleEditBlog = async () => {
+  const handleEditBlog = async (e) => {
+    e.stopPropagation();
+
     await dispatch({
       type: actionTypes.blog.FETCH_SINGLE_SUCCESS,
       payload: blog,
     });
     navigate('/edit-blog');
   };
-
+  const portal = useReactPortal(
+    <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+      <Alert onClose={() => setModalOpen(false)} onDelete={handleDeleteTask} />
+    </Modal>
+  );
   return (
-    <div onClick={navigateToBlog}>
+    <motion.div {...animation} onClick={navigateToBlog} key={blog?.id}>
       <div className="blog-card">
         <div className="max-w-[340px]">
           <img
@@ -86,13 +99,15 @@ const BlogCard = ({ blog }) => {
         </div>
         <div className="mt-2 relative">
           <h3 className="text-slate-300 text-xl lg:text-2xl">{blog?.title}</h3>
-          <p className="mb-6 text-base text-slate-500 mt-1">{blog?.content}</p>
+          <p className="mb-6 text-base text-slate-500 mt-1">
+            {getPreviewContent(blog?.content)}
+          </p>
 
           <div className="flex justify-between items-center">
             <div className="flex items-center capitalize space-x-2">
-              {avatarUrl ? (
+              {!avatarUrl.includes('/null') && avatarUrl ? (
                 <div
-                  onClick={navigateToProfile}
+                  onClick={(e) => navigateToProfile(e)}
                   className="avater-img bg-orange-600 text-white max-h-[32px] max-w-[32px] lg:max-h-[44px] lg:max-w-[44px]">
                   <img
                     className="rounded-full overflow-hidden w-full h-full"
@@ -145,13 +160,17 @@ const BlogCard = ({ blog }) => {
               {showActionDot && (
                 <div className="action-modal-container">
                   <button
-                    onClick={handleEditBlog}
+                    onClick={(e) => handleEditBlog(e)}
                     className="action-menu-item hover:text-lwsGreen">
                     <img src={EditSVG} alt="Edit" />
                     Edit
                   </button>
                   <button
-                    onClick={(e) => handleDeleteTask(e)}
+                    // onClick={(e) => handleDeleteTask(e)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModalOpen(true);
+                    }}
                     className="action-menu-item hover:text-red-500">
                     <img src={DeleteSVG} alt="Delete" />
                     Delete
@@ -160,10 +179,18 @@ const BlogCard = ({ blog }) => {
               )}
             </div>
           )}
+          {portal}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 export default BlogCard;
+
+const animation = {
+  initial: { y: '50%', opacity: 0, scale: 0.5 },
+  animate: { y: 0, opacity: 1, scale: 1 },
+  exit: { y: '-50%', opacity: 0, transition: { duration: 0.1 } },
+  transition: { duration: 0.2, ease: 'easeOut' },
+};

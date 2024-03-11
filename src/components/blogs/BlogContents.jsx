@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import RectBlogSVG from '../../assets/blogs/React-Roadmap.jpg';
+import RectBlogSVG from '../../assets/Image_not_available.png';
 import { getFormattedDate } from '../../utils';
 const BlogContents = ({ blog }) => {
   const { title, thumbnail, content, tags, createdAt, likes, author } =

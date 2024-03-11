@@ -22,7 +22,7 @@ const PreLoader = ({ when }) => {
   if (when) {
     return (
       <div style={style}>
-        <Loader />
+        <Loader message={'Loading Please wait ...'} />
       </div>
     );
   }

@@ -3,9 +3,13 @@ import LikeFilledIcon from '../../assets/icons/like-filled.svg';
 import LikeSVG from '../../assets/icons/like.svg';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { useAxios } from '../../hooks/useAxios';
+import useReactPortal from '../../hooks/useReactPortal';
+import Modal from '../modal/Modal';
+import AuthNotification from '../shared/AuthNotification';
 
 const BlogLike = ({ blogId = '', initialLikes = [] }) => {
   const [likes, setLikes] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
   const [liked, setLiked] = useState(false);
   const { api } = useAxios();
   const { auth } = useAuthContext();
@@ -26,6 +30,10 @@ const BlogLike = ({ blogId = '', initialLikes = [] }) => {
   }, [getLikes, userId]);
 
   const handleLike = async () => {
+    if (!userId) {
+      setOpenModal(true);
+      return;
+    }
     try {
       const response = await api.post(
         `${import.meta.env.VITE_SERVER_BASE_URI}/blogs/${blogId}/like`
@@ -43,11 +51,20 @@ const BlogLike = ({ blogId = '', initialLikes = [] }) => {
       setLiked(false);
     }
   };
+
+  const portal = useReactPortal(
+    <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+      <AuthNotification onClose={() => setOpenModal(false)} />
+    </Modal>
+  );
   return (
-    <button className="flex place-items-center gap-1" onClick={handleLike}>
-      <img src={liked ? LikeFilledIcon : LikeSVG} alt="like" />
-      <span>{likes?.length}</span>
-    </button>
+    <>
+      {!userId && portal}
+      <button className="flex place-items-center gap-1" onClick={handleLike}>
+        <img src={liked ? LikeFilledIcon : LikeSVG} alt="like" />
+        <span>{likes?.length}</span>
+      </button>
+    </>
   );
 };
 

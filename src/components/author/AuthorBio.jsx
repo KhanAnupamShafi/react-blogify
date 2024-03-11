@@ -16,7 +16,6 @@ const AuthorBio = () => {
   const [bio, setBio] = useState(state?.user?.bio);
   const { api } = useAxios();
   const isMe = auth?.user?.id === state?.author?.id;
-
   const handleBioEdit = async () => {
     dispatch({ type: actionTypes.profile.FETCH_REQUEST });
     try {
@@ -46,24 +45,33 @@ const AuthorBio = () => {
   };
   return (
     <div className="mt-4 flex items-start gap-2 lg:mt-6">
-      {isMe ? (
+      {profile?.id ? (
         <div className="flex-1">
           {!editMode ? (
             <p className="leading-[188%] text-gray-400 lg:text-lg">
-              {profile?.bio.length > 0 ? (
-                profile?.bio
+              {profile?.bio ? (
+                isMe ? (
+                  bio || profile?.bio
+                ) : (
+                  profile?.bio
+                )
               ) : (
                 <span className="italic">&ldquo; Write your Bio &ldquo; </span>
               )}
             </p>
           ) : (
-            <textarea
-              className='p-2 className="leading-[188%] text-gray-600 lg:text-lg rounded-md'
-              cols="60"
-              rows="4"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-            />
+            <>
+              <textarea
+                className="p-2 leading-[188%] text-gray-600 lg:text-lg rounded-md"
+                cols="60"
+                rows="4"
+                value={bio}
+                onChange={(e) => {
+                  const { value } = e.target;
+                  setBio(value);
+                }}
+              />
+            </>
           )}
         </div>
       ) : (

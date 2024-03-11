@@ -62,7 +62,6 @@ const AuthorAvatar = () => {
   if (isSubmitting) {
     return <PreLoader when={true} />;
   }
-  console.log(profileAvatar);
   return (
     <div className="relative mb-8 max-h-[180px] max-w-[180px] h-[120px] w-[120px] rounded-full lg:mb-11 lg:max-h-[218px] lg:max-w-[218px] bg-orange-300">
       {profileAvatar ? (
@@ -77,7 +76,11 @@ const AuthorAvatar = () => {
         </div>
       ) : (
         <div className="w-full h-full bg-orange-600 text-white grid place-items-center text-5xl rounded-full">
-          <span className="capitalize">{state?.user?.firstName[0]}</span>
+          <span className="capitalize">
+            {location.pathname === '/profile'
+              ? state?.user?.firstName[0]
+              : state?.author?.firstName[0]}
+          </span>
         </div>
       )}
       {(isMe || location.pathname === '/profile') && (

@@ -4,11 +4,12 @@ import BlogCard from '../components/blogs/BlogCard';
 import EmptyBlog from '../components/blogs/EmptyBlog';
 import FavoriteBlogs from '../components/blogs/FavoriteBlogs';
 import PopularBlogs from '../components/blogs/PopularBlogs';
+import Loader from '../components/loader/Loader';
 import SkeletonLoader from '../components/loader/SkeletonLoader';
+import { Transition } from '../framer/transition';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useBlogContext } from '../hooks/useBlogContext';
 import { actionTypes } from '../reducers';
-
 const HomePage = () => {
   const { state, dispatch } = useBlogContext();
   const { auth } = useAuthContext();
@@ -76,28 +77,36 @@ const HomePage = () => {
   }, [hasMore, page, dispatch, blogs]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-      <div className="space-y-3 md:col-span-5">
-        {/* <!-- Blog Card Start --> */}
-        {blogs.length > 0 ? (
-          blogs?.map((blog) => <BlogCard key={blog.id} blog={blog} />)
-        ) : (
-          <EmptyBlog />
-        )}
+    <Transition>
+      <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+        <div className="space-y-3 md:col-span-5">
+          {/* <!-- Blog Card Start --> */}
+          {blogs.length > 0 ? (
+            blogs?.map((blog) => <BlogCard key={blog.id} blog={blog} />)
+          ) : (
+            <EmptyBlog />
+          )}
 
-        {hasMore && (
-          <div ref={loaderRef}>
-            <SkeletonLoader />
-          </div>
-        )}
+          {hasMore && (
+            <div ref={loaderRef}>
+              <SkeletonLoader />
+            </div>
+          )}
+          {!hasMore && (
+            <Loader
+              message={'End of Blogs. Stay tuned for more!'}
+              spinner="off"
+            />
+          )}
+        </div>
+
+        <div className="md:col-span-2 h-full w-full space-y-5">
+          <PopularBlogs />
+
+          {auth.accessToken && <FavoriteBlogs />}
+        </div>
       </div>
-
-      <div className="md:col-span-2 h-full w-full space-y-5">
-        <PopularBlogs />
-
-        {auth.accessToken && <FavoriteBlogs />}
-      </div>
-    </div>
+    </Transition>
   );
 };
 

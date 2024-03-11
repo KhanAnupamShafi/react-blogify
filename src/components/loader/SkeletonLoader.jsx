@@ -19,7 +19,7 @@ const SkeletonLoader = () => {
           </div>
         </div>
       </div>
-      <Loader />
+      <Loader message={'Loading Please wait ...'} />
     </div>
   );
 };
