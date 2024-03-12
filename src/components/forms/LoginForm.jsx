@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import InputField from '../shared/InputField';
 
 const LoginForm = () => {
+  const { state: locationState } = useLocation();
   const navigate = useNavigate();
   const { setAuth } = useAuthContext();
   const {
@@ -26,7 +27,14 @@ const LoginForm = () => {
           const accessToken = token.accessToken;
           const refreshToken = token.refreshToken;
           setAuth({ user, accessToken, refreshToken });
-          navigate('/');
+
+          if (locationState) {
+            // redirect user back to where they were
+            const { redirectTo } = locationState;
+            navigate(`${redirectTo.pathname}${redirectTo.search}`);
+          } else {
+            navigate('/');
+          }
         }
       }
     } catch (error) {

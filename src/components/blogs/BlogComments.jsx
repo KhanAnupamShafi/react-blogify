@@ -5,7 +5,12 @@ import { useAxios } from '../../hooks/useAxios';
 import { useProfileContext } from '../../hooks/useProfileContext';
 import CommentItem from './CommentItem';
 
-const BlogComments = ({ blogId = '', comments = [], setComments }) => {
+const BlogComments = ({
+  blogId = '',
+  comments = [],
+  setComments,
+  onDelete,
+}) => {
   const { auth } = useAuthContext();
   const { state } = useProfileContext();
   const { api } = useAxios();
@@ -89,6 +94,7 @@ const BlogComments = ({ blogId = '', comments = [], setComments }) => {
               key={comment.id}
               comment={comment}
               profileAvatar={profileAvatar}
+              onDelete={onDelete}
             />
           ))}
       </div>

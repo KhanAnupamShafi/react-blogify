@@ -7,6 +7,11 @@ const TextAreaField = ({ register, label, name, rules, errors, ...Props }) => {
         </label>
       )}
       <div className="relative">
+        {errors && (
+          <p role="alert" className="mb-2 text-sm text-red-600">
+            {errors.message || 'Error'}*
+          </p>
+        )}
         <textarea
           {...register(name, rules)}
           id={name}
@@ -34,11 +39,6 @@ const TextAreaField = ({ register, label, name, rules, errors, ...Props }) => {
           </div>
         )}
       </div>
-      {errors && (
-        <p role="alert" className="mt-2 text-sm text-red-600">
-          {errors.message || 'Error'}
-        </p>
-      )}
     </div>
   );
 };

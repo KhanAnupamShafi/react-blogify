@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Search from '../../assets/icons/search.svg';
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { useProfileContext } from '../../hooks/useProfileContext';
@@ -14,6 +14,7 @@ import SearchModal from '../modal/SearchModal';
 const HeaderActions = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { auth, setAuth } = useAuthContext();
   const { state } = useProfileContext();
   const user = state?.user ?? auth?.user;
@@ -53,6 +54,7 @@ const HeaderActions = () => {
       <li>
         {!auth?.user ? (
           <Link
+            state={{ redirectTo: location }}
             to="/login"
             className="text-white/50 hover:text-white transition-all duration-200">
             Login

@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import Footer from '../components/layout/Footer';
 import Header from '../components/layout/Header';
 import ProfileProvider from '../context/providers/ProfileProvider';
@@ -6,6 +6,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 
 const PrivateRoute = () => {
   const { auth } = useAuthContext();
+  const location = useLocation();
 
   return (
     <>
@@ -24,7 +25,7 @@ const PrivateRoute = () => {
           </>
         </>
       ) : (
-        <Navigate to={'/login'} />
+        <Navigate to={'/login'} replace state={{ redirectTo: location }} />
       )}
     </>
   );

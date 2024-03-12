@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
+import DeleteSVG from '../../assets/icons/delete.svg';
 import { useAuthContext } from '../../hooks/useAuthContext';
-
-const CommentItem = ({ comment = {}, profileAvatar }) => {
+const CommentItem = ({ comment = {}, profileAvatar, onDelete }) => {
   const { auth } = useAuthContext();
   let avatar;
   const isMyComment = comment.author.id === auth?.user?.id;
@@ -10,7 +10,7 @@ const CommentItem = ({ comment = {}, profileAvatar }) => {
   } else {
     avatar = comment?.author?.avatar;
   }
-  console.log(avatar);
+
   return (
     <div className="flex items-start space-x-4 my-8">
       {avatar ? (
@@ -33,7 +33,7 @@ const CommentItem = ({ comment = {}, profileAvatar }) => {
         </Link>
       )}
 
-      <div className="w-full">
+      <div className="">
         <Link to={`/profile/${comment?.author?.id}`}>
           <h5 className="text-slate-500 font-bold">
             {comment?.author?.firstName} {comment?.author?.lastName}
@@ -41,6 +41,18 @@ const CommentItem = ({ comment = {}, profileAvatar }) => {
         </Link>
         <p className="text-slate-300">{comment?.content}</p>
       </div>
+      {isMyComment && (
+        <div className="flex">
+          ({' '}
+          <img
+            onClick={() => onDelete(comment?.id)}
+            src={DeleteSVG}
+            alt="deleting comment"
+            className="cursor-pointer"
+          />
+          )
+        </div>
+      )}
     </div>
   );
 };

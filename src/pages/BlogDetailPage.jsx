@@ -41,11 +41,27 @@ const BlogDetailPage = () => {
     fetchSingleBlog();
   }, [blogId, dispatch, api]);
 
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const response = await api.delete(
+        `${
+          import.meta.env.VITE_SERVER_BASE_URI
+        }/blogs/${blogId}/comment/${commentId}`
+      );
+      if (response.status === 204 || response.status === 200) {
+        // Remove the deleted comment from the state
+        setComments((prevComments) =>
+          prevComments.filter((comment) => comment.id !== commentId)
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      // Handle error if deletion fails
+    }
+  };
+
   if (state?.loading) {
     return <div>Loading ...</div>;
-  }
-  if (state?.error) {
-    return <div>Error fetching in Blog Detail...</div>;
   }
 
   return (
@@ -55,6 +71,7 @@ const BlogDetailPage = () => {
         blogId={state?.blog?.id}
         comments={comments}
         setComments={setComments}
+        onDelete={handleDeleteComment}
       />
       <BlogActions
         blogId={state?.blog?.id}

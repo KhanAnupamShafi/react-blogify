@@ -15,9 +15,10 @@ const CreateBlogPage = () => {
   const { api } = useAxios();
   const fileUploadRef = useRef();
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isNoImage, setIsNoImageError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = location.pathname === '/edit-blog' && state?.blog?.id;
-  console.log(isEditMode);
+  console.log(isNoImage);
   const {
     register,
     handleSubmit,
@@ -56,7 +57,8 @@ const CreateBlogPage = () => {
       setSelectedImage(URL.createObjectURL(file));
     }
   };
-  const removeImage = () => {
+  const removeImage = (e) => {
+    e.stopPropagation();
     setSelectedImage(null);
     // Clear the file input value
     fileUploadRef.current.value = '';
@@ -65,6 +67,12 @@ const CreateBlogPage = () => {
   // post blog entry
   const onSubmit = async (formData) => {
     setIsSubmitting(true);
+    // Check if an image is selected
+    if (isNoImage) {
+      setIsNoImageError(true);
+      setIsSubmitting(false);
+      return;
+    }
     dispatch({ type: actionTypes.blog.FETCH_REQUEST });
 
     const formDataToSend = new FormData();
@@ -137,7 +145,7 @@ const CreateBlogPage = () => {
     <div className="min-h-[calc(100vh-220px)]">
       {(selectedImage || isEditMode) && (
         <div className="mt-4">
-          <h1 className="mb-3 text-center font-semibold sm:text-lg text-gray-300">
+          <h1 className="mb-3 text-center font-semibold sm:text-sm text-gray-300">
             To Upload
           </h1>
 
@@ -146,9 +154,9 @@ const CreateBlogPage = () => {
             className="flex flex-1 flex-wrap -m-1 justify-center">
             <li
               id="empty"
-              className="h-full w-32 text-center flex flex-col items-center justify-center group relative hover:bg-gray-50 hover:bg-opacity-30 rounded-md">
+              className="h-32 max-w-[280px] text-center flex flex-col items-center justify-center group relative hover:bg-gray-50 hover:bg-opacity-30 rounded-md">
               <img
-                className=" mx-auto w-full max-w-[200px] max-h-[200px] object-cover rounded-md group-hover:opacity-40 transition-opacity"
+                className=" mx-auto w-52 h-32 object-cover rounded-md group-hover:opacity-40 transition-opacity"
                 src={
                   selectedImage ??
                   `${import.meta.env.VITE_SERVER_BASE_URI}/uploads/blog/${
@@ -158,13 +166,13 @@ const CreateBlogPage = () => {
                 alt="Selected thumbnail"
               />
               <section
-                className="flex flex-col rounded-md text-xs break-words w-full h-full absolute top-0 py-2 px-3 "
+                className="flex flex-col rounded-md text-xs break-words w-full h-full absolute top-0 py-2 px-3 cursor-pointer"
                 onClick={handleImageUpload}>
                 <h1 className="flex-1"></h1>
                 <div className="flex">
                   <p className="p-1 size text-xs"></p>
                   <button
-                    onClick={removeImage}
+                    onClick={(e) => removeImage(e)}
                     className="ml-auto focus:outline-none hover:bg-gray-300 p-1 rounded-md group-hover:block hidden">
                     <svg
                       className="pointer-events-none fill-current w-4 h-4 ml-auto"
@@ -192,7 +200,9 @@ const CreateBlogPage = () => {
           <div className="grid place-items-center bg-slate-600/20 h-[150px] rounded-md my-4">
             <button
               onClick={handleImageUpload}
-              className="flex items-center gap-4 hover:scale-110 transition-all cursor-pointer">
+              className={`flex items-center gap-4 hover:scale-110 transition-all cursor-pointer ${
+                isNoImage && 'border border-red-500 rounded-md'
+              }`}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -208,6 +218,7 @@ const CreateBlogPage = () => {
               </svg>
               <p>Upload Your Image</p>
             </button>
+            {isNoImage && <p className="text-sm text-red-400">required*</p>}{' '}
           </div>
         )}
         <input
@@ -262,6 +273,12 @@ const CreateBlogPage = () => {
           </p>
         )}
         <button
+          onClick={() =>
+            !isEditMode &&
+            !state?.blog?.thumbnail &&
+            !selectedImage &&
+            setIsNoImageError(true)
+          }
           type="submit"
           className="bg-indigo-600 text-white px-6 py-2 md:py-3 rounded-md hover:bg-indigo-700 transition-all duration-200">
           {!isEditMode ? 'Create' : 'Edit'} Blog
