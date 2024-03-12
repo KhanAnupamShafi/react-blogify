@@ -9,7 +9,7 @@ const PublicRoute = () => {
       <>
         <ProfileProvider>
           <Header />
-          <main className="">
+          <main className="min-h-[70vh]">
             <section className="container">
               <Outlet />
             </section>

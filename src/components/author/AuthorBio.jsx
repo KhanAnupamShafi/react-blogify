@@ -56,7 +56,7 @@ const AuthorBio = () => {
                   profile?.bio
                 )
               ) : (
-                <span className="italic">&ldquo; Write your Bio &ldquo; </span>
+                <span className="italic">&ldquo; No Bio &ldquo; </span>
               )}
             </p>
           ) : (

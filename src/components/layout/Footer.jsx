@@ -1,7 +1,7 @@
 import Logo from '../../assets/logo.svg';
 const Footer = () => {
   return (
-    <footer className="my-6 md:my-8 bg-[#030317] relative">
+    <footer className="my-6 md:my-8 bg-[#030317] relative bottom-0">
       <div className="container mx-auto flex items-center justify-between">
         <a href="/">
           <img className="w-28" src={Logo} alt="lws" />

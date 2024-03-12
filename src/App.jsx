@@ -25,10 +25,10 @@ function App() {
           <Route element={<HomePage />} path="/" exact />
           <Route element={<ProfilePage />} path="/profile/:profileId" />
           <Route element={<BlogDetailPage />} path="/blog/:blogId" />
-        </Route>
 
-        <Route element={<LoginPage />} path="/login" />
-        <Route element={<RegistrationPage />} path="/register" />
+          <Route element={<LoginPage />} path="/login" />
+          <Route element={<RegistrationPage />} path="/register" />
+        </Route>
 
         <Route element={<NotFoundPage />} path="*" />
       </Routes>
