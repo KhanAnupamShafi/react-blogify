@@ -28,7 +28,7 @@ const BlogCard = ({ blog }) => {
 
   const navigateToBlog = (e) => {
     e.stopPropagation();
-    navigate(`blog/${blog?.id}`);
+    navigate(`/blog/${blog?.id}`);
   };
 
   const navigateToProfile = (e) => {
