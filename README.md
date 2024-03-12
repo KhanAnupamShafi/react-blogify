@@ -43,7 +43,7 @@ $ npm run dev
             |   |-- RegistrationPage.jsx
 ```
 
-## 💻 Snapshot
+## 💻 Snapshot :
 
 [product-screenshot]: public/site.png
 
