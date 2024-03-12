@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { instance } from '../api/axiosInstance';
 import AuthorBlogs from '../components/author/AuthorBlogs';
 import AuthorInfo from '../components/author/AuthorInfo';
@@ -13,7 +13,11 @@ const ProfilePage = () => {
   const { auth } = useAuthContext();
   const { profileId } = useParams();
   const userId = profileId ?? auth?.user?.id;
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (auth?.user?.id === profileId) navigate('/profile');
+  }, [auth?.user?.id, profileId, navigate]);
   useEffect(() => {
     dispatch({ type: actionTypes.profile.FETCH_REQUEST });
 

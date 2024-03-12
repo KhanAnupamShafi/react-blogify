@@ -9,7 +9,7 @@ import PreLoader from '../loader/PreLoader';
 
 const AuthorAvatar = () => {
   const { state, dispatch } = useProfileContext();
-  const { auth } = useAuthContext();
+  const { auth, setAuth } = useAuthContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileUploadRef = useRef();
   const { api } = useAxios();
@@ -43,6 +43,13 @@ const AuthorAvatar = () => {
             type: actionTypes.profile.UPDATE_AVATAR_SUCCESS,
             payload: response.data?.user,
           });
+          setAuth((updatedAuth) => ({
+            ...updatedAuth,
+            user: {
+              ...updatedAuth?.user,
+              avatar: response?.data?.user?.avatar,
+            },
+          }));
           navigate(`/profile`);
         }, 700);
       }

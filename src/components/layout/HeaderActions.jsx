@@ -18,6 +18,7 @@ const HeaderActions = () => {
   const { auth, setAuth } = useAuthContext();
   const { state } = useProfileContext();
   const user = state?.user ?? auth?.user;
+  console.log(state?.user);
   const handleLogout = () => {
     setAuth({});
     navigate('/login');
