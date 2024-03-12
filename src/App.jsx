@@ -18,11 +18,11 @@ function App() {
         <Route element={<PrivateRoutes />}>
           <Route element={<CreateBlogPage />} path="/create-blog" />
           <Route element={<CreateBlogPage />} path="/edit-blog" />
+          <Route element={<ProfilePage />} path="/profile" />
         </Route>
 
         <Route element={<PublicRoutes />}>
           <Route element={<HomePage />} path="/" exact />
-          <Route element={<ProfilePage />} path="/profile" />
           <Route element={<ProfilePage />} path="/profile/:profileId" />
           <Route element={<BlogDetailPage />} path="/blog/:blogId" />
         </Route>
