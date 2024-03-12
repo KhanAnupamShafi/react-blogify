@@ -15,14 +15,17 @@ const CreateBlogPage = () => {
   const { api } = useAxios();
   const fileUploadRef = useRef();
   const [selectedImage, setSelectedImage] = useState(null);
-  const [isNoImage, setIsNoImageError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = location.pathname === '/edit-blog' && state?.blog?.id;
-  console.log(isNoImage);
+  const [isNoImage, setIsNoImage] = useState(true);
+  //   let isNoImage = !isEditMode && !state?.blog?.thumbnail && !selectedImage;
+  console.log(isNoImage, 'isNoImage');
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
+    clearErrors,
     reset,
   } = useForm({
     defaultValues: isEditMode
@@ -55,6 +58,8 @@ const CreateBlogPage = () => {
 
     if (file) {
       setSelectedImage(URL.createObjectURL(file));
+      setIsNoImage(false);
+      clearErrors('thumbnail');
     }
   };
   const removeImage = (e) => {
@@ -62,15 +67,23 @@ const CreateBlogPage = () => {
     setSelectedImage(null);
     // Clear the file input value
     fileUploadRef.current.value = '';
+    setIsNoImage(true);
+    setError('thumbnail', {
+      type: 'manual',
+      message: 'Image is required',
+    });
   };
-
   // post blog entry
   const onSubmit = async (formData) => {
     setIsSubmitting(true);
     // Check if an image is selected
-    if (isNoImage) {
-      setIsNoImageError(true);
+    if (isNoImage && !isEditMode) {
       setIsSubmitting(false);
+      setIsNoImage(true);
+      setError('thumbnail', {
+        type: 'manual',
+        message: 'Image is required',
+      }); // Show error message if no image is selected
       return;
     }
     dispatch({ type: actionTypes.blog.FETCH_REQUEST });
@@ -200,9 +213,7 @@ const CreateBlogPage = () => {
           <div className="grid place-items-center bg-slate-600/20 h-[150px] rounded-md my-4">
             <button
               onClick={handleImageUpload}
-              className={`flex items-center gap-4 hover:scale-110 transition-all cursor-pointer ${
-                isNoImage && 'border border-red-500 rounded-md'
-              }`}>
+              className={`flex items-center gap-4 hover:scale-110 transition-all cursor-pointer `}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -218,7 +229,9 @@ const CreateBlogPage = () => {
               </svg>
               <p>Upload Your Image</p>
             </button>
-            {isNoImage && <p className="text-sm text-red-400">required*</p>}{' '}
+            {errors.thumbnail && (
+              <p className="text-sm text-red-400">required*</p>
+            )}
           </div>
         )}
         <input
@@ -273,12 +286,6 @@ const CreateBlogPage = () => {
           </p>
         )}
         <button
-          onClick={() =>
-            !isEditMode &&
-            !state?.blog?.thumbnail &&
-            !selectedImage &&
-            setIsNoImageError(true)
-          }
           type="submit"
           className="bg-indigo-600 text-white px-6 py-2 md:py-3 rounded-md hover:bg-indigo-700 transition-all duration-200">
           {!isEditMode ? 'Create' : 'Edit'} Blog
