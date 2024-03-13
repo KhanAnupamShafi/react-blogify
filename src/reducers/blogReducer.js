@@ -48,7 +48,7 @@ const blogReducer = (state, action) => {
         ...state,
         loading: false,
         error: null,
-        blogs: action.payload,
+        blogs: [...state.blogs, ...action.payload],
       };
     }
     case actionTypes.blog.FETCH_FAILURE: {

@@ -33,7 +33,7 @@ const HomePage = () => {
           } else {
             dispatch({
               type: actionTypes.blog.FETCH_SUCCESS,
-              payload: [...fetchedBlogs, ...blogs],
+              payload: [...fetchedBlogs],
             });
             setPage((prevPage) => prevPage + 1);
           }
